@@ -4,8 +4,8 @@ from common.helpers.operationResults import OperationResults
 from server import icityServer
 
 """
-    Class that inform a error code of http list
-    * class      httpErrorCodes
+    Class to Base all Routes for Home Workspace
+    * class      BaseRoutes
     * requires   python 3.+, PyQt5
     * version    1.0.0
     * package    pyCommom

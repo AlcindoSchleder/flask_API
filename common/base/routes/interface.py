@@ -4,8 +4,8 @@ from flask.views import MethodView
 from common.helpers.operationResults import OperationResults
 
 """
-    Class that inform a error code of http list
-    * class      httpErrorCodes
+    Interface to all routes of API (not used)
+    * class      InterfaceRoute
     * requires   python 3.+, PyQt5
     * version    1.0.0
     * package    pyCommom
