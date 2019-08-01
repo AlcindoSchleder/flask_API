@@ -4,6 +4,6 @@ defaultObject = {
     "data": {},
     "state": {
         "sttCode": 200,
-        "sttMsgs": 'Operation realized Successfully!'
+        "sttMsgs": "Operation realized Successfully!"
     }
 } 

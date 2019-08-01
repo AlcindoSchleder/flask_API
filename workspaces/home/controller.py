@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from flask import jsonify
 from flask_restplus import Namespace
 from server import icityServer
 from workspaces.home import BaseRoutes
@@ -14,11 +13,10 @@ class HomeRoutes(BaseRoutes):
     def get(self):
         self.resultStatusCode = 200
         data = {
-            "page": "<h1>Home page with Blueprint!</h1>"
+            "page":"<h1>Home page with Blueprint!</h1>"
         }
         self.resultData = data
-        print('------> Result: ', self.result)
-        return jsonify(self.result), self.resultStatusCode
+        return self.result, self.resultStatusCode
 
 icityServer.icity_api.add_namespace(ns, path=BaseRoutes.PATH_API)
 
