@@ -21,8 +21,8 @@ class BaseRoutes(MethodView, OperationResults):
     PREFIX_ROUTE = f'{API_ROOT}/{API_BASE_NAME}'
     PATH_API = f'{API_ROOT}/{API_BASE_NAME}/{VERSION}'
 
-    def __init__(self):
-        super(BaseRoutes, self).__init__()
+    # def __init__(self):
+    #     super(BaseRoutes, self).__init__()
         
     def get(self):
         raise NotImplementedError()

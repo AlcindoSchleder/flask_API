@@ -10,7 +10,7 @@ from common.helpers import defaultObject
     package     : i-City Identification Plataform
 """
 class OperationResults(ErrorCodes):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         super(OperationResults, self).__init__()
         self._result = defaultObject
 

@@ -145,13 +145,13 @@ class Connection(IDatabases):
 
             data = []
             if (self._dbTable.filters is None):
-                dbData = self._session.query(self._dbTable).all()
+                dbRecords = self._session.query(self._dbTable).all()
             else:
-                dbData = self._session.query(self._dbTable).filter(self._dbTable.filter).all()
+                dbRecords = self._session.query(self._dbTable).filter(self._dbTable.filter).all()
             
             idx = 0
-            for regData in dbData:
-                data[idx] = regData
+            for dbRec in dbRecords:
+                data[idx] = dbRec
                 idx += 1 
 
             self.resultData = data

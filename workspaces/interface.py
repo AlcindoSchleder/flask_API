@@ -16,8 +16,8 @@ from common.helpers.operationResults import OperationResults
 
 class InterfaceRoute(MethodView, OperationResults):
 
-    def __init__(self):
-        super(InterfaceRoute, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(InterfaceRoute, self).__init__(args, kwargs)
 
     def get(self):
         raise NotImplementedError()

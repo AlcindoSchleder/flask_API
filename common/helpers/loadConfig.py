@@ -19,6 +19,8 @@ class LoadJsonFiles:
         self._dataConfig = dataConfig
         if (self._checkFile(fileName)):
             self._fn = fileName
+        else:
+            raise Exception(f"File {fileName} not found!")
         
         self._jsonFileConfig = {}
         try:

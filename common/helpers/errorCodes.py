@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
+from common import COMMON_DIRECTORY
 from common.helpers.loadConfig import LoadJsonFiles
-
-ERROR_FILENAME = './commom/httpErrorCodes.json'
 
 """
     Class that inform a error code of http list
@@ -15,8 +14,10 @@ ERROR_FILENAME = './commom/httpErrorCodes.json'
 """
 class ErrorCodes:
 
+    ERROR_FILENAME = f'{COMMON_DIRECTORY}/httpErrorCodes.json'
+    
     def __init__(self):
-        conf = LoadJsonFiles(ERROR_FILENAME) 
+        conf = LoadJsonFiles(self.ERROR_FILENAME) 
         self._errorCodesList = dict(conf.dictData)
 
     @property
@@ -25,7 +26,7 @@ class ErrorCodes:
 
     @property
     def errorGroup(self, code: int = 200):
-        grp = self.isValid(code)
+        grp = self._isValid(code)
         if (grp):
             return self._errorCodesList[grp]["code"]
         else:
@@ -33,7 +34,7 @@ class ErrorCodes:
     
     @property
     def errorGroupAndCodeDescr(self, code: int = 200):
-        grp = self.isValid(code)
+        grp = self._isValid(code)
         if (grp):
             return { 
                 "groupName": self._errorCodesList[grp]["name"],

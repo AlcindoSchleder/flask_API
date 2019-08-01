@@ -2,9 +2,10 @@
 import os
 from flask import Flask, Blueprint
 from flask_restplus import Api
+from common import COMMON_DIRECTORY
 from common.helpers.operationResults import OperationResults
 
-CONFIGURE_FILE = "./commom/config.json"
+CONFIGURE_FILE = f'{COMMON_DIRECTORY}/config.json'
 CONFIGURE_HASH = os.environ.get("CONFIG_HASH", default="2097318b312d6a195170d0f7a49067a9de761fd82693b30f39f2437bd4013da6")
 CONFIGURE_DATA = "ICITY_SECURITY_DATA"
 
@@ -30,7 +31,8 @@ class ICityServer(OperationResults):
         self.setEnvironmentConfig()
 
         # Create all blueprint apps 
-        self.icity_bp  = Blueprint('home', __name__)
+        self.icity_bp = Blueprint('home', __name__)
+        self.icity_admin_bp = Blueprint('admin', __name__)
 
         # Create a swagger api from home app
         self.icity_api = Api(
