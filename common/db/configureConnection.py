@@ -34,10 +34,12 @@ class ConfigureConnection(OperationResults):
             self.result = ljf.checkFileHash(CONFIGURE_HASH)
             if (self.resultStatusCode != 200):
                 raise Exception(self.resultStatusMessage)
-            self._globalConfig = ljf.dictData[self._configDriver]
+            self._globalConfig = ljf.dictData
         except Exception as e:
+            msg = f'Can not load config file {CONFIGURE_FILE}!!\nRazon: {e.args}'
             self.resultStatusCode = 500
-            self.resultStatusMessage = 'A internal unexpected error occurred: %s' %(e.args)            
+            self.resultStatusMessage = msg
+            raise Exception(msg)
 
     def connectionUri(self):
         if (self.resultStatusCode != 200):
@@ -48,8 +50,11 @@ class ConfigureConnection(OperationResults):
         user   = self._globalConfig[self._configDriver]["database"]["user"]
         pwd    = self._globalConfig[self._configDriver]["database"]["password"]
         dbName = self._globalConfig[self._configDriver]["database"]["db_name"]
-        
-        return driver + "://" + user + ":" + pwd + "@" + host + "/" + dbName
+        if (driver == 'sqlite'):
+            from data import DATABASE_PATH
+            return f'{driver}://{DATABASE_PATH}/{dbName}'
+        else:
+            return f'{driver}://{user}:{pwd}@{host}/{dbName}'
 
     @property
     def globalConfig(self):

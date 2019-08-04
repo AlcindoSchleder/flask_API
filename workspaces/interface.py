@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask.views import MethodView
+from flask_restplus import Resource
 
 from common.helpers.operationResults import OperationResults
 
@@ -14,10 +14,11 @@ from common.helpers.operationResults import OperationResults
     * copyright  Vocatio Telecom <https://www.vocatiotelecom.com.br>
 """
 
-class InterfaceRoute(MethodView, OperationResults):
+class InterfaceRoute(Resource, OperationResults):
 
     def __init__(self, *args, **kwargs):
         super(InterfaceRoute, self).__init__(args, kwargs)
+        self.db = None
 
     def get(self):
         raise NotImplementedError()

@@ -6,7 +6,7 @@ from common import COMMON_DIRECTORY
 from common.helpers.operationResults import OperationResults
 
 CONFIGURE_FILE = f'{COMMON_DIRECTORY}/config.json'
-CONFIGURE_HASH = os.environ.get("CONFIG_HASH", default="2097318b312d6a195170d0f7a49067a9de761fd82693b30f39f2437bd4013da6")
+CONFIGURE_HASH = os.environ.get("CONFIG_HASH", default="b17913cc95df7a21eb8faa3fb55571e70f963f26a613bc72677842033506f32c")
 CONFIGURE_DATA = "ICITY_SECURITY_DATA"
 
 """

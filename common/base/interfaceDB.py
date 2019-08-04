@@ -74,22 +74,22 @@ class IDatabases(OperationResults, DBOperations):
     def _connect(self):
         raise NotImplementedError()
 
-    def insert(self, item):
-        if (not self._canExec(FLAG_INSERT)):
-            raise ictyError.UserNotHasPermission(DSC_PERM[FLAG_INSERT])
-        raise NotImplementedError()
-    
-    def browse(self, item, skip, limit):
+    def browseRecord(self, item, skip, limit):
         if (not self._canExec(FLAG_BROWSE)):
             raise ictyError.UserNotHasPermission(DSC_PERM[FLAG_BROWSE])
         raise NotImplementedError()
-    
-    def update(self, aWhere, item):
+
+    def insertRecord(self, item):
+        if (not self._canExec(FLAG_INSERT)):
+            raise ictyError.UserNotHasPermission(DSC_PERM[FLAG_INSERT])
+        raise NotImplementedError()
+        
+    def updateRecord(self, aWhere, item):
         if (not self._canExec(FLAG_UPDATE)):
             raise ictyError.UserNotHasPermission(DSC_PERM[FLAG_UPDATE])
         raise NotImplementedError()
 
-    def delete(self, aWhere):
+    def deleteRecord(self, aWhere):
         if (not self._canExec(FLAG_DELETE)):
             raise ictyError.UserNotHasPermission(DSC_PERM[FLAG_DELETE])
         raise NotImplementedError()
