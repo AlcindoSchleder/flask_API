@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask_restplus import Resource
+from flask.views import MethodView
 
 from common.helpers.operationResults import OperationResults
 
@@ -14,7 +14,7 @@ from common.helpers.operationResults import OperationResults
     * copyright  Vocatio Telecom <https://www.vocatiotelecom.com.br>
 """
 
-class InterfaceRoute(Resource, OperationResults):
+class InterfaceRoute(MethodView, OperationResults):
 
     def __init__(self, *args, **kwargs):
         super(InterfaceRoute, self).__init__(args, kwargs)

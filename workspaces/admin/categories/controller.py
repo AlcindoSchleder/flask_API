@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, jsonify, Request
+from flask import Flask
 from flask_restplus import Namespace, reqparse
 
 from server import icityServer
@@ -7,11 +7,13 @@ from workspaces.admin import BaseRoutes
 from workspaces.admin.categories.service import HandleCategories
 from workspaces.admin.categories.model import CategoriesModel
 
+
 ns = Namespace(BaseRoutes.API_BASE_NAME, description='Cadastro de Categorias')
 
-CategoryModel = CategoriesModel()(icityServer.icity_api) 
-parser = reqparse.RequestParser()
-parser.add_argument('page', type=int, default=0, help='Página da lista')
+CategoryModel = CategoriesModel()(ns) 
+
+page_parser = reqparse.RequestParser()
+page_parser.add_argument('page', type=int, default=1, help='Página da lista')
 
 db = HandleCategories(icityServer.icity_app)
 db.connect()
@@ -35,6 +37,7 @@ class CategoriesListRoutes(BaseRoutes):
         self.db = db
 
     @ns.doc('Lista as categorias de usuários')
+    @ns.expect(page_parser)
     @ns.doc(responses={500: 'Internal Error:'})
     @ns.marshal_list_with(CategoryModel)
     def get(self, page: int = 0):
@@ -99,7 +102,6 @@ class CategoriesRoutes(BaseRoutes):
  
     @ns.doc('Exclui uma categorias de usuários')
     @ns.doc(responses={500: 'Internal Error:'})
-    @ns.expect(parser)
     def delete(self, id):
         self.resultStatusCode = 200
         self.result = self.db.delete(id)
@@ -110,10 +112,10 @@ class CategoriesRoutes(BaseRoutes):
 icityServer.icity_api.add_namespace(ns, path=f'{BaseRoutes.PATH_API}/categories')
 
 # Routes to List Rules
-# icityServer.icity_app.add_url_rule('/', view_func=CategoriesListRoutes.get, methods=['GET', 'POST'])
+icityServer.icity_app.add_url_rule('/', view_func=CategoriesListRoutes.get, methods=['GET', 'POST'])
 
-# api_route = CategoriesRoutes.as_view(f'{BaseRoutes.API_BASE_NAME}_categories')
+api_route = CategoriesRoutes.as_view(f'{BaseRoutes.API_BASE_NAME}_categories')
 
-# icityServer.icity_app.add_url_rule('/<int:id>', view_func=api_route, methods=['GET'])
-# icityServer.icity_app.add_url_rule('/<int:id>', view_func=api_route, methods=['PUT'])
-# icityServer.icity_app.add_url_rule('/<int:id>', view_func=api_route, methods=['DELETE'])
+icityServer.icity_app.add_url_rule('/<int:id>', view_func=api_route, methods=['GET'])
+icityServer.icity_app.add_url_rule('/<int:id>', view_func=api_route, methods=['PUT'])
+icityServer.icity_app.add_url_rule('/<int:id>', view_func=api_route, methods=['DELETE'])

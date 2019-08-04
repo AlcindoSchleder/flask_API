@@ -59,15 +59,15 @@ class Connection(IDatabases):
             raise Exception(f'{msg}: ({e.args})')
         
     def _createSession(self):
-        if ((not self._engine) and (self._engine.closed)):
-            self.resultStatusCode = 301
-            self.resultStatusMessage = 'Database not connected!'
-            return False
         try:
+            if (self._engine is None):
+                msg = 'Engine not created ou closed!'                
+                self.resultStatusCode = 301
+                self.resultStatusMessage = 'Database not connected!'
+                raise Exception(msg)
             Session = sessionmaker(bind=self._engine)
             Session.configure(bind=self._engine)
             self._session = Session(autocommit=True)
-            return True
         except Exception as e:
             if (self._session) and (self._session.is_active):
                 self._session.close()
@@ -75,6 +75,7 @@ class Connection(IDatabases):
             self.resultStatusCode = 500
             self.resultStatusMessage = msg
             raise Exception(msg)
+        return True
 
     def connect(self):
         self.resultStatusCode = 200
@@ -93,12 +94,13 @@ class Connection(IDatabases):
                 raise Exception(msg)
 
     def disconnect(self):
-        if ((self._session) and (self._session.is_active)):
+        if ((self._session is not None) and (self._session.is_active)):
             self._session.close()
         return True
 
+    @property
     def isConnected(self):
-        return ((self._session) and (self._session.is_active))
+        return ((self._session is not None) and (self._session.is_active))
 
     @property
     def engine(self):

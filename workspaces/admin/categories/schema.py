@@ -43,15 +43,15 @@ class Categories(Base):
         self.update_date = updateDate
         self.insert_date = insertDate if (insertDate) else datetime.now
 
-    @validates('flag_tcat', include_backrefs=False)
-    def validate_flag_tcat(self, key, address):
-        assert ((address > -1) and (address < 6)), "Field 'flag_tcat' only supports value between 0 and 5!"
-        return address
+    # @validates('flag_tcat', include_backrefs=False)
+    # def validate_flag_tcat(self, key, address):
+    #     assert ((address > -1) and (address < 6)), "Field 'flag_tcat' only supports value between 0 and 5!"
+    #     return address
 
-    @validates('flag_default', include_backrefs=False)
-    def validate_flag_default(self, key, address):
-        assert (address in (0, 1)), "Field 'flag_default' only accept false(0) or true(1)!"
-        return address
+    # @validates('flag_default', include_backrefs=False)
+    # def validate_flag_default(self, key, address):
+    #     assert (address in (0, 1)), "Field 'flag_default' only accept false(0) or true(1)!"
+    #     return address
 
     @property
     def tableName(self):
