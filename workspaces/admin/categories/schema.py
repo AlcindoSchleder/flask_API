@@ -1,11 +1,29 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Table, MetaData, Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy.ext.declarative import declared_attr, as_declarative
+from sqlalchemy import Table, MetaData, Column, Integer, String, DateTime, ForeignKey, inspect
 from sqlalchemy.orm import validates
 
-Base = declarative_base()
+@as_declarative()
+class Base:
+
+    __name__ = None
+
+    @declared_attr
+    def __tablename__(self):
+        return self.__name__.lower()
+
+    def _asdict(self):
+        return {c.key: getattr(self, c.key)
+            for c in inspect(self).mapper.column_attrs}
+
+    def __repr__(self):
+        s = f'<{self.__tablename__}('
+        for c in inspect(self).mapper.column_attrs:
+            s += f'{c.key}={getattr(self, c.key)}, '
+        s = s[:len(s) - 2] + ')>'
+        return s
 
 class TTypeRoles():
     trUsers      = 0
@@ -26,7 +44,7 @@ class TTypeRoles():
 """
 class Categories(Base):
     __tablename__ = 'categories'
-    __filters__   = None
+    # __filters__   = None
     
     pk_categories = Column(Integer, primary_key=True)
     dsc_tcat = Column(String(100), nullable=False)
@@ -35,37 +53,24 @@ class Categories(Base):
     date_update = Column(DateTime, nullable=True)
     date_insert = Column(DateTime, nullable=False)
 
-    def __init__(self, pkCategories = None, dscTCat = None, flagTCat = None, flagDefault = None, updateDate = None, insertDate = None):
+    def __init__(self, pkCategories = None, dscTCat = None, flagTCat = None, flagDefault = None, dateUpdate = None, dateInsert = None):
         self.pk_categories = pkCategories if (pkCategories) else 0
         self.dsc_tcat = dscTCat if (dscTCat) else ' '
         self.flag_tcat = flagTCat if (flagTCat) else 0
         self.flag_default = flagDefault if (flagDefault) else 0
-        self.update_date = updateDate
-        self.insert_date = insertDate if (insertDate) else datetime.now
+        self.date_update = dateUpdate
+        self.date_insert = dateInsert if (dateInsert) else datetime.now()
 
-    # @validates('flag_tcat', include_backrefs=False)
-    # def validate_flag_tcat(self, key, address):
-    #     assert ((address > -1) and (address < 6)), "Field 'flag_tcat' only supports value between 0 and 5!"
-    #     return address
+    @validates('flag_tcat', include_backrefs=False)
+    def validate_flag_tcat(self, key, address):
+        assert ((address > -1) and (address < 6)), "Field 'flag_tcat' only supports value between 0 and 5!"
+        return address
 
-    # @validates('flag_default', include_backrefs=False)
-    # def validate_flag_default(self, key, address):
-    #     assert (address in (0, 1)), "Field 'flag_default' only accept false(0) or true(1)!"
-    #     return address
+    @validates('flag_default', include_backrefs=False)
+    def validate_flag_default(self, key, address):
+        assert (address in (0, 1)), "Field 'flag_default' only accept false(0) or true(1)!"
+        return address
 
     @property
     def tableName(self):
         return self.__tablename__
-
-    @property
-    def filters(self):
-        return self.__filters__
-
-    @filters.setter
-    def filters(self, *filters):
-        self.__filters__ = filters
-    
-    def __repr__(self):
-        return "<Categories(pk_categories='%s', dsc_cat='%s', flag_tcat='%s', flag_default='%s', date_insert='%s', date_update='%s')>" % (
-            self.pk_categories, self.dsc_tcat, self.flag_tcat, self.flag_default, self.date_insert, self.date_update)
-

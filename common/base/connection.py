@@ -24,7 +24,6 @@ class Connection(IDatabases):
         self._engine  = None
         self._session = None
         self._dbTable = None
-        self._filter = None
         self._DATABASE_URI = None
         self._setDriver(self._app.config['DATABASE_DRIVER'])
 
@@ -48,7 +47,8 @@ class Connection(IDatabases):
 
     def _config_db(self):
         self.resultStatusCode = 200
-        msg = f'Database {self._appConfig.databaseName} on {self._appConfig.databaseDriver} not found. Plase verify with your sysdba!'
+        msg = f'Database {self._appConfig.databaseName} on {self._appConfig.databaseDriver} '
+        msg += f'({self._DATABASE_URI}) not found. Plase verify with your sysdba!'
         try:
             if not database_exists(self._DATABASE_URI):
                 self.resultStatusCode = 404
@@ -120,18 +120,12 @@ class Connection(IDatabases):
 
     @dbTable.setter
     def dbTable(self, table):
-        if ((table) and (table.tableName)):
-            if ((self._dbTable) and (table.tableName != self._dbTable.tableName)):
-                self.disconnect()
-            self._dbTable = table
+        self._dbTable = table
 
     @property
     def dbTableName(self) -> str:
         return self._dbTable.tableName
 
-    def setFilter(self, *filter):
-        self._filter = filter
-        
     def execCommand(self, aQuery: str, aParams: dict = None) -> dict:
         if (not self._session.is_active):
             self._session.begin()
@@ -149,31 +143,26 @@ class Connection(IDatabases):
             self._session.close()
         return self.result
 
-    def browseRecord(self):
+    def browseRecord(self, filters):
         self.resultStatusCode = 200
         try:
-            print('-------> Iniciando a sessão!')
             if (not self._session.is_active):
                 self._session.begin()
 
-            print(f'-------> Iniciando a Busca na tabela {self.dbTableName}!')
-            if (self._dbTable.filters is None):
-                print(f'-------> Buscando todos os registros!')
-                dbRecords = self._session.query(self._dbTable).all()
+            self._result['data'] = []
+            if (filters is None):
+                for row in self._session.query(self._dbTable).all():
+                    self._result['data'].append(row._asdict())
             else:
-                print(f'-------> Buscando registros filtrados!')
-                dbRecords = self._session.query(self._dbTable).filter(self._dbTable.filter).all()
-            
-            print('-------> Conteudor de dbRecords: ', dir(dbRecords))
-            self.resultData = {dbRecords}
+                for row in self._session.query(self._dbTable).filter(filters).all():
+                    self._result['data'].append(row._asdict())
+
             self._session.commit()
         except Exception as e:
             self._session.rollback()
             self.resultStatusCode = 500
             self.resultStatusMessage = f'Erro ao pesquisar registros na tabela {self.dbTableName}! : {e.args}'
-            print(f'------>', self.resultStatusMessage)
         finally:
-            self._filter = None
             self._session.close()
 
     def insertRecord(self):

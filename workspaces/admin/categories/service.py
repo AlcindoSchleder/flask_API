@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+
+from flask_restplus import resource
 from common.helpers.operationResults import OperationResults
 from common.base.connection import Connection
 from workspaces.admin.categories.schema import Categories, TTypeRoles
@@ -20,31 +23,32 @@ class HandleCategories(Connection):
  
     def browse(self, id: int = 0, page: int = 0):
         self.resultStatusCode = 200
+        filters = None
+        if (id > 0):
+            filters = (Categories.pk_categories == id)
+        
+        #   ////////// PAGINATION ////////
+        # if (page > 0): order_by()[limit integer:offset integer]
+        #     # set limit to page of generate pagination if page > 0 and all to all recores
+        #     # Categories.limit = 10
+        #     pass
+        # order_by = Categories.dsc_tcat
+        
+        self.dbTable = Categories
+        self.browseRecord(filters)
 
-        print('------> Verificando PK se deve inserir um filtro!')
-        if (id > 0): # if is valid id param
-            # read a registry from categories table with pkCategories = id value
-            Categories.filters = (Categories.pk_categories == id)
-        print('------> Verificando PAGE se deve inserir um filtro!')
-        if (page > 0):
-            # set limit to page of generate pagination if page > 0 and all to all recores
-            # Categories.limit = 10
-            pass
-        print(f'------> Criando o esquema de Categorias atribuindo o ID ({id}) à Categories()!')
-        self.dbTable = Categories(pkCategories = id)
-        print('------> Executando o Browser do DB!')
-        self.browseRecord()
-
-        print('------> Retornando o result!', self.result)
         return self.result
  
-    def insert(self, data: dict):
+    def insert(self, data):
         self.resultStatusCode = 200
-
-        self.db.dbTable = Categories(
-            dscTCat = data.dscTCat, 
-            flagTCat = data.flagTCat, 
-            flagDefault = data.flagDefault
+        data['update_date'] = None
+        data['insert_date'] = datetime.now()
+        self.dbTable = Categories(
+            dscTCat = data['dsc_tcat'], 
+            flagTCat = data['flag_tcat'], 
+            flagDefault = data['flag_default'],
+            dateUpdate = data['update_date'],
+            dateInsert = data['insert_date']
         )
         self.insertRecord()
 

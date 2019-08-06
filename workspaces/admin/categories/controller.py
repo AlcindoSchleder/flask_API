@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask
+from flask import Flask, request
 from flask_restplus import Namespace, reqparse
 
 from server import icityServer
@@ -42,11 +42,11 @@ class CategoriesListRoutes(BaseRoutes):
     @ns.marshal_list_with(CategoryModel)
     def get(self, page: int = 0):
         self.resultStatusCode = 200
-        print('------> Chamando o método Browser')
+
         self.result = self.db.browse(page=page)
         if (self.resultStatusCode != 200):
             ns.abort(code=self.resultStatusCode, message=self.resultStatusMessage)
-        return self.result, self.resultStatusCode
+        return self.result['data'], self.resultStatusCode
  
     @ns.doc('Insere novas categorias de usuários')
     @ns.doc(responses={500: 'Internal Error:'})
@@ -54,16 +54,13 @@ class CategoriesListRoutes(BaseRoutes):
     @ns.marshal_with(CategoryModel)
     def post(self):
         self.resultStatusCode = 200
+        data = ns.payload
 
-        data = {
-            "dscTCat": CategoryModel.get('dsc_tcat'),
-            "flagTCat": CategoryModel.get('flag_tcat'),
-            "flagDefault": CategoryModel.get('flag_default')
-        }
         self.result = self.db.insert(data)
         if (self.resultStatusCode != 200):
             ns.abort(code=self.resultStatusCode, message=self.resultStatusMessage)
-        return self.result, self.resultStatusCode
+
+        return self.result['data'], self.resultStatusCode
 
 @ns.route('/<int:id>')
 class CategoriesRoutes(BaseRoutes):
@@ -74,13 +71,13 @@ class CategoriesRoutes(BaseRoutes):
 
     @ns.doc('Busca uma categoria de usuários')
     @ns.doc(responses={500: 'Internal Error:'})
-    @ns.marshal_list_with(CategoryModel)
-    def get(self, id: int = 0, page: int = 0):
+    @ns.marshal_with(CategoryModel)
+    def get(self, id: int = 0):
         self.resultStatusCode = 200
         self.result = self.db.browse(id)
         if (self.resultStatusCode != 200):
             ns.abort(code=self.resultStatusCode, message=self.resultStatusMessage)
-        return self.result, self.resultStatusCode
+        return self.result['data'], self.resultStatusCode
  
     @ns.doc('Altera uma categoria de usuários')
     @ns.doc(responses={500: 'Internal Error:'})
@@ -98,7 +95,7 @@ class CategoriesRoutes(BaseRoutes):
         self.result = self.db.update(data)
         if (self.resultStatusCode != 200):
             ns.abort(code=self.resultStatusCode, message=self.resultStatusMessage)
-        return self.result, self.resultStatusCode
+        return self.result['data'], self.resultStatusCode
  
     @ns.doc('Exclui uma categorias de usuários')
     @ns.doc(responses={500: 'Internal Error:'})
@@ -107,7 +104,7 @@ class CategoriesRoutes(BaseRoutes):
         self.result = self.db.delete(id)
         if (self.resultStatusCode != 200):
             ns.abort(code=self.resultStatusCode, message=self.resultStatusMessage)
-        return self.result, self.resultStatusCode
+        return self.result['data'], self.resultStatusCode
 
 icityServer.icity_api.add_namespace(ns, path=f'{BaseRoutes.PATH_API}/categories')
 

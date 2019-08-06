@@ -52,7 +52,7 @@ class ConfigureConnection(OperationResults):
         dbName = self._globalConfig[self._configDriver]["database"]["db_name"]
         if (driver == 'sqlite'):
             from data import DATABASE_PATH
-            return f'{driver}://{DATABASE_PATH}/{dbName}'
+            return f'{driver}:///{DATABASE_PATH}/{dbName}'
         else:
             return f'{driver}://{user}:{pwd}@{host}/{dbName}'
 
