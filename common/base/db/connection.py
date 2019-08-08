@@ -3,8 +3,8 @@ import json
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database, drop_database
-from common.base.interfaceDB import IDatabases
-from common.db.configureConnection import ConfigureConnection
+from common.base.db.interfaceDB import IDatabases
+from common.base.db.configureConnection import ConfigureConnection
 
 """
     Class that implements a Basic DataBase Connection

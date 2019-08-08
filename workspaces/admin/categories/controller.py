@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, request
 from flask_restplus import Namespace, reqparse
 
 from server import icityServer

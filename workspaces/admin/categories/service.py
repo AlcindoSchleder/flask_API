@@ -2,8 +2,7 @@
 from datetime import datetime
 
 from flask_restplus import resource
-from common.helpers.operationResults import OperationResults
-from common.base.connection import Connection
+from common.base.db.connection import Connection
 from workspaces.admin.categories.schema import Categories, TTypeRoles
 
 """

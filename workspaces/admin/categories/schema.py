@@ -1,29 +1,9 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from sqlalchemy.ext.declarative import declared_attr, as_declarative
 from sqlalchemy import Table, MetaData, Column, Integer, String, DateTime, ForeignKey, inspect
 from sqlalchemy.orm import validates
-
-@as_declarative()
-class Base:
-
-    __name__ = None
-
-    @declared_attr
-    def __tablename__(self):
-        return self.__name__.lower()
-
-    def _asdict(self):
-        return {c.key: getattr(self, c.key)
-            for c in inspect(self).mapper.column_attrs}
-
-    def __repr__(self):
-        s = f'<{self.__tablename__}('
-        for c in inspect(self).mapper.column_attrs:
-            s += f'{c.key}={getattr(self, c.key)}, '
-        s = s[:len(s) - 2] + ')>'
-        return s
+from common.base.schema.schemabase import SchemaBase
 
 class TTypeRoles():
     trUsers      = 0
@@ -42,7 +22,7 @@ class TTypeRoles():
     * author     Alcindo Schleder <alcindoschleder@gmail.com>
     * copyright  Vocatio Telecom <https://www.vocatiotelecom.com.br>
 """
-class Categories(Base):
+class Categories(SchemaBase):
     __tablename__ = 'categories'
     # __filters__   = None
     
