@@ -1,7 +1,7 @@
 # flask_API
 Uma API completa em python para fonte de estudos utilizando Flask e FlaskRESTplus
 
-[![](https://github.com/AlcindoSchleder/flask_API/blob/master/logo.jpg)]
+![](https://github.com/AlcindoSchleder/flask_API/blob/master/logo.jpg)
 
 
 ### Caracterísiticas
